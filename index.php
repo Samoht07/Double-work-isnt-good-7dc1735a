@@ -16,7 +16,8 @@ try {
 } catch (\PDOExeption $e) {
     throw new \PDOExeption($e->getMessage("no connection"), (int)$e->getCode());
 }
-$moviedata = $pdo->query('SELECT * from movies');
+$moviedata = $pdo->query('SELECT * from media');
+
 ?>
 
 <html>
@@ -28,8 +29,8 @@ $moviedata = $pdo->query('SELECT * from movies');
     <form method="post">
         <h1>Titel: </h1><br>
         <input type="text" name="titleUpload"><br>
-        <h1>Duur: </h1><br>
-        <input type="number" name="duurUpload"><br>
+        <h1>Film of Serie: </h1><br>
+        <input type="text" name="fiSerUpload"><br>
         <h1>Datum van uitkomst: </h1><br>
         <input type="text" name="datumUpload"><br>
         <h1>Land van uitkomst: </h1>
@@ -42,33 +43,29 @@ $moviedata = $pdo->query('SELECT * from movies');
     <?php
         if(isset($_POST["upload"])){
             $title = $_POST['titleUpload'];
-            $duur = $_POST['duurUpload'];
+            $duur = $_POST['fiSerUpload'];
             $datum = $_POST['datumUpload'];
             $land = $_POST['landUpload'];
             $omschrijf = $_POST['omschrijfUpload'];
-            $moviedata = $pdo->query('SELECT * from movies');
+            $moviedata = $pdo->query('SELECT * from media');
 
-            $query = "INSERT INTO `movies` (title, duur, datum_van_uitkomst, land_van_uitkomst, description) VALUES (:title, :duur, :datum, :land, :omschrijf)";
+            $query = "INSERT INTO `media` (Null, titel, film_of_serie, datum_van_uitkomst, herkomst, omschrijving) VALUES (:id, :title, :fiSer, :datum, :land, :omschrijf)";
 
             $pdoresult = $pdo->prepare($query);
 
-            $pdoExec = $pdoresult->execute(array(":title"=>$title,":duur"=>$duur,":datum"=>$datum,":land"=>$land,":omschrijf"=>$omschrijf));
+            $pdoExec = $pdoresult->execute(array(":id"=>$id,":title"=>$title,":fiSer"=>$fiSer,":datum"=>$datum,":land"=>$land,":omschrijf"=>$omschrijf));
             header("Location: ./index.php?link=".$_GET['link']."");
         } 
 
         foreach ($moviedata as $row){
     ?>
         <tr>
-            <td>
-                <form method="get">
-                <input name="link" type="submit" value="<?php echo $row['id'] ?>">
-                </form>
-            </td>
+            <td><?php echo "id: " . $row['id']; ?></td>
             <td><?php echo "title: " .  $row['title']; ?></td>
-            <td><?php echo "title: " .  $row['duur']; ?></td>
-            <td><?php echo "title: " .  $row['datum']; ?></td>
-            <td><?php echo "title: " .  $row['land']; ?></td>
-            <td><?php echo "title: " .  $row['omschrijf']; ?></td>
+            <td><?php echo "film of serie: " .  $row['fiSer']; ?></td>
+            <td><?php echo "datum: " .  $row['datum']; ?></td>
+            <td><?php echo "land: " .  $row['land']; ?></td>
+            <td><?php echo "omschrijving: " .  $row['omschrijf']; ?></td>
         </tr>
     <?php
         }
